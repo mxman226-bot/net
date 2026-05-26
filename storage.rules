@@ -1,0 +1,31 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        firestore.exists(/databases/(default)/documents/users/$(request.auth.uid)) &&
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Lesson videos: signed-in read, admin write, max 500MB
+    match /lessons/{lessonId}/{fileName} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin()
+        && request.resource.size < 500 * 1024 * 1024;
+    }
+
+    // Lesson thumbnails: signed-in read, admin write, max 5MB images
+    match /thumbnails/{lessonId}/{fileName} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin()
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+  }
+}

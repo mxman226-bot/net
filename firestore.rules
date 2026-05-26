@@ -1,0 +1,89 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // ---------- Users ----------
+    match /users/{uid} {
+      // Anyone signed-in can read public profile fields, owner & admin can read all
+      allow read: if isSignedIn();
+
+      // Self-create on signup with default role 'student' and balance 0
+      allow create: if isOwner(uid)
+        && request.resource.data.role == 'student'
+        && request.resource.data.balance == 0;
+
+      // Owner can update only safe fields. Balance + role are admin-only.
+      allow update: if (
+        isOwner(uid)
+        && !('balance' in request.resource.data.diff(resource.data).affectedKeys())
+        && !('role' in request.resource.data.diff(resource.data).affectedKeys())
+      ) || isAdmin();
+
+      allow delete: if isAdmin();
+
+      // Wallet history (write-only via transactions on server-trusted code paths or admin)
+      match /walletHistory/{entryId} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow create, update, delete: if isAdmin();
+      }
+
+      // Per-user lesson progress
+      match /progress/{lessonId} {
+        allow read, write: if isOwner(uid) || isAdmin();
+      }
+
+      // Quiz attempts
+      match /quizAttempts/{attemptId} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow create: if isOwner(uid);
+        allow update, delete: if isAdmin();
+      }
+    }
+
+    // ---------- Lessons (public read, admin write) ----------
+    match /lessons/{lessonId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ---------- Quizzes ----------
+    match /quizzes/{quizId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ---------- Recycle bin (admin only) ----------
+    match /recycleBin/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    // ---------- Recharge requests (user creates, admin approves) ----------
+    match /rechargeRequests/{reqId} {
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == 'pending';
+      allow update, delete: if isAdmin();
+    }
+
+    // ---------- App config ----------
+    match /config/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+  }
+}

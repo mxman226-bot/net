@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#060d14">
+<title>أ/ محمد أيمن | منصة الكيمياء</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<!-- ========= SPLASH ========= -->
+<div id="splash" class="splash">
+  <div class="splash-logo">⚗️</div>
+  <div class="splash-spin"></div>
+  <div class="splash-text">جارٍ التحميل…</div>
+</div>
+
+<!-- ========= BG (lightweight) ========= -->
+<div class="bg-canvas" aria-hidden="true">
+  <div class="grid-lines"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+</div>
+
+<!-- ========= HEADER (logo only) ========= -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="logo-icon" aria-hidden="true">⚗️</div>
+      <div class="header-titles">
+        <h1>أ/ محمد أيمن</h1>
+        <div class="sub">CHEMISTRY</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ========= PROFILE TOP BAR ========= -->
+<section class="profile-section" id="profileSection" aria-label="حساب الطالب" hidden>
+  <div class="profile-wrap">
+    <div class="profile-card">
+      <div class="profile-top">
+        <div class="profile-av" id="profileAv" aria-hidden="true">م</div>
+        <div class="profile-meta">
+          <div class="profile-name">
+            <span id="profileNameText" class="profile-name-text">-</span>
+            <i class="fas fa-shield-check verified" title="حساب موثّق" aria-hidden="true"></i>
+          </div>
+          <div class="profile-sub">
+            <span class="chip"><i class="fas fa-graduation-cap" aria-hidden="true"></i> <span id="profileStageText">-</span></span>
+            <span class="dot" aria-hidden="true"></span>
+            <span id="profilePhone" class="profile-phone">-</span>
+          </div>
+        </div>
+        <button class="profile-logout" type="button" data-action="logout" aria-label="تسجيل الخروج">
+          <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="profile-bottom">
+        <div class="balance-block">
+          <div class="balance-ico"><i class="fas fa-coins" aria-hidden="true"></i></div>
+          <div>
+            <div class="balance-label">رصيدك الحالي</div>
+            <div class="balance-amount" id="balDisp">0 جنيه</div>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button class="btn-ghost" type="button" data-action="open-tx" aria-label="سجل المعاملات">
+            <i class="fas fa-clock-rotate-left" aria-hidden="true"></i>
+          </button>
+          <button class="recharge-btn" type="button" data-action="open-recharge">
+            <i class="fas fa-plus-circle" aria-hidden="true"></i> شحن رصيد
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========= LOGIN ========= -->
+<div id="s-login" class="screen active">
+  <div class="container">
+    <div class="sec-hdr">
+      <h2>أهلاً بيك في منصة الكيمياء</h2>
+      <p>سجّل دخولك أو أنشئ حساب جديد لتبدأ رحلتك</p>
+      <div class="divider"></div>
+    </div>
+
+    <div class="tabs" id="authTabs" role="tablist">
+      <div class="tab-indicator" id="tabIndicator"></div>
+      <button class="tab active" type="button" role="tab" data-tab="login">
+        <i class="fas fa-sign-in-alt" aria-hidden="true"></i> تسجيل الدخول
+      </button>
+      <button class="tab" type="button" role="tab" data-tab="register">
+        <i class="fas fa-user-plus" aria-hidden="true"></i> حساب جديد
+      </button>
+    </div>
+
+    <form id="loginForm" class="auth-form" autocomplete="on" novalidate>
+      <div class="card">
+        <div class="field">
+          <label for="l-phone"><i class="fas fa-mobile-alt c-teal" aria-hidden="true"></i> رقم الموبايل</label>
+          <input type="tel" id="l-phone" name="phone" placeholder="01XXXXXXXXX" maxlength="11"
+                 inputmode="numeric" autocomplete="tel" class="num-input"
+                 data-validate="phone" aria-describedby="l-phone-hint">
+          <div class="field-hint" id="l-phone-hint" aria-live="polite"></div>
+        </div>
+        <div class="field">
+          <label for="l-pass"><i class="fas fa-key c-gold" aria-hidden="true"></i> كلمة السر</label>
+          <div class="pw-wrap">
+            <input type="password" id="l-pass" name="password" placeholder="أدخل كلمة السر" maxlength="30" autocomplete="current-password">
+            <button type="button" class="pw-toggle" data-pw="l-pass" aria-label="إظهار كلمة السر">
+              <i class="fas fa-eye" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+        <button class="btn-primary" type="submit" id="loginBtn">
+          <span class="btn-label"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> دخول</span>
+          <span class="spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+    </form>
+
+    <form id="registerForm" class="auth-form is-hidden" autocomplete="on" novalidate>
+      <div class="card">
+        <div class="field">
+          <label for="r-name"><i class="fas fa-user c-teal" aria-hidden="true"></i> الاسم الكامل</label>
+          <input type="text" id="r-name" name="name" placeholder="مثال: محمد علي" maxlength="40"
+                 autocomplete="name" data-validate="name" aria-describedby="r-name-hint">
+          <div class="field-hint" id="r-name-hint" aria-live="polite"></div>
+        </div>
+        <div class="field">
+          <label for="r-phone"><i class="fas fa-mobile-alt c-teal" aria-hidden="true"></i> رقم الموبايل</label>
+          <input type="tel" id="r-phone" name="phone" placeholder="01XXXXXXXXX" maxlength="11"
+                 inputmode="numeric" autocomplete="tel" class="num-input"
+                 data-validate="phone" aria-describedby="r-phone-hint">
+          <div class="field-hint" id="r-phone-hint" aria-live="polite"></div>
+        </div>
+        <div class="field">
+          <label for="r-pass"><i class="fas fa-key c-gold" aria-hidden="true"></i> كلمة السر (6 أحرف على الأقل)</label>
+          <div class="pw-wrap">
+            <input type="password" id="r-pass" name="password" placeholder="••••••" maxlength="30"
+                   autocomplete="new-password" data-validate="pass" aria-describedby="r-pass-hint">
+            <button type="button" class="pw-toggle" data-pw="r-pass" aria-label="إظهار كلمة السر">
+              <i class="fas fa-eye" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="field-hint" id="r-pass-hint" aria-live="polite"></div>
+        </div>
+        <div class="field">
+          <label for="r-stage"><i class="fas fa-graduation-cap c-teal" aria-hidden="true"></i> المرحلة الدراسية</label>
+          <select id="r-stage" name="stage">
+            <option value="">-- اختار مرحلتك --</option>
+            <optgroup label="إعدادي">
+              <option>الأول الإعدادي</option>
+              <option>الثاني الإعدادي</option>
+              <option>الثالث الإعدادي</option>
+            </optgroup>
+            <optgroup label="ثانوي">
+              <option>الأول الثانوي</option>
+              <option>الثاني الثانوي</option>
+              <option>الثالث الثانوي</option>
+            </optgroup>
+          </select>
+        </div>
+        <button class="btn-primary" type="submit" id="regBtn">
+          <span class="btn-label"><i class="fas fa-user-plus" aria-hidden="true"></i> إنشاء الحساب</span>
+          <span class="spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ========= MAIN ========= -->
+<div id="s-main" class="screen">
+  <div class="container">
+    <div class="sec-hdr">
+      <h2 id="mainWelcomeTitle">حصصك الدراسية</h2>
+      <p id="mainWelcomeSub">اضغط للدخول على حصصك</p>
+      <div class="divider"></div>
+    </div>
+    <div id="continueWatching" class="continue-row" hidden></div>
+    <div id="mainClassCard"></div>
+  </div>
+</div>
+
+<!-- ========= LESSONS LIST ========= -->
+<div id="s-details" class="screen">
+  <div class="container">
+    <div class="sec-hdr">
+      <h2 id="classTitle"></h2>
+      <p>اختار الحصة وتفاعل معها</p>
+      <div class="divider"></div>
+    </div>
+
+    <div class="search-row">
+      <div class="search-input">
+        <i class="fas fa-search" aria-hidden="true"></i>
+        <input type="search" id="lessonSearch" placeholder="ابحث عن حصة…" aria-label="بحث">
+      </div>
+      <div class="filter-pills" id="filterPills">
+        <button class="pill active" data-filter="all" type="button">الكل</button>
+        <button class="pill" data-filter="unlocked" type="button">المفعّلة</button>
+        <button class="pill" data-filter="locked" type="button">المغلقة</button>
+      </div>
+    </div>
+
+    <div class="stats-row" id="statsRow"></div>
+    <div id="sessionsList"></div>
+
+    <button class="back-btn" type="button" data-action="go-main"><i class="fas fa-arrow-right" aria-hidden="true"></i> الرئيسية</button>
+  </div>
+</div>
+
+<!-- ========= MODALS ========= -->
+<div id="confirmBuyModal" class="modal-bg" data-close-on-backdrop>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="confirmBuyTitle">
+    <div class="modal-icon">💳</div>
+    <div class="modal-title" id="confirmBuyTitle">شراء الحصة</div>
+    <p id="confirmSessName" class="modal-sub"></p>
+    <div id="confirmDetails" class="confirm-details"></div>
+    <div class="modal-actions">
+      <button class="btn-primary btn-gold" type="button" data-action="confirm-buy">
+        <span class="btn-label"><i class="fas fa-check-circle" aria-hidden="true"></i> تأكيد الشراء</span>
+        <span class="spinner" aria-hidden="true"></span>
+      </button>
+      <button class="btn-danger" type="button" data-close="confirmBuyModal"><i class="fas fa-times" aria-hidden="true"></i> إلغاء</button>
+    </div>
+    <button type="button" class="link-btn" data-action="open-recharge-from-confirm">
+      <i class="fas fa-plus-circle" aria-hidden="true"></i> شحن رصيد أولاً
+    </button>
+  </div>
+</div>
+
+<div id="unlockModal" class="modal-bg" data-close-on-backdrop>
+  <div class="modal-box" role="dialog" aria-modal="true">
+    <div class="modal-icon">🔐</div>
+    <div class="modal-title">تفعيل بكود خاص</div>
+    <p id="unlockSessName" class="modal-sub"></p>
+    <input type="text" id="codeInput" class="code-input" placeholder="أدخل الكود" maxlength="12" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <div class="modal-actions">
+      <button class="btn-primary" type="button" data-action="verify-code"><span class="btn-label"><i class="fas fa-unlock-alt" aria-hidden="true"></i> تفعيل</span></button>
+      <button class="btn-danger" type="button" data-close="unlockModal"><i class="fas fa-times" aria-hidden="true"></i> إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- VIDEO PLAYER MODAL -->
+<div id="videoModal" class="modal-bg" data-close-on-backdrop>
+  <div class="modal-box video-box" role="dialog" aria-modal="true">
+    <button type="button" class="modal-close" data-close="videoModal" aria-label="إغلاق"><i class="fas fa-times" aria-hidden="true"></i></button>
+    <div class="video-title" id="videoTitle"></div>
+    <div class="video-frame" id="videoFrame"></div>
+  </div>
+</div>
+
+<!-- QUIZ MODAL -->
+<div id="quizModal" class="modal-bg" data-close-on-backdrop>
+  <div class="modal-box quiz-box" role="dialog" aria-modal="true">
+    <button type="button" class="modal-close" data-close="quizModal" aria-label="إغلاق"><i class="fas fa-times" aria-hidden="true"></i></button>
+    <div class="quiz-header">
+      <div class="quiz-title" id="quizTitle">اختبار</div>
+      <div class="quiz-progress"><div class="quiz-progress-bar" id="quizProgressBar"></div></div>
+      <div class="quiz-meta" id="quizMeta">سؤال 1/5</div>
+    </div>
+    <div class="quiz-body" id="quizBody"></div>
+    <div class="quiz-footer">
+      <button class="btn-primary" type="button" id="quizNextBtn"><span class="btn-label">التالي <i class="fas fa-arrow-left" aria-hidden="true"></i></span></button>
+    </div>
+  </div>
+</div>
+
+<!-- TRANSACTIONS MODAL -->
+<div id="txModal" class="modal-bg" data-close-on-backdrop>
+  <div class="modal-box tx-box" role="dialog" aria-modal="true">
+    <button type="button" class="modal-close" data-close="txModal" aria-label="إغلاق"><i class="fas fa-times" aria-hidden="true"></i></button>
+    <div class="modal-title">سجل المعاملات</div>
+    <div id="txList" class="tx-list"></div>
+  </div>
+</div>
+
+<!-- RECHARGE MODAL -->
+<div id="rechargeModal" class="modal-bg" data-close-on-backdrop>
+  <div class="modal-box recharge-box" role="dialog" aria-modal="true">
+    <div class="recharge-head">
+      <button type="button" class="modal-close" data-close="rechargeModal" aria-label="إغلاق"><i class="fas fa-times" aria-hidden="true"></i></button>
+      <div class="recharge-emoji" aria-hidden="true">💰</div>
+      <div class="recharge-title">اشحن رصيدك دلوقتي</div>
+      <div class="recharge-sub">وافتح حصصك في ثواني</div>
+    </div>
+    <div class="recharge-body">
+      <div class="steps">
+        <div class="step-row"><span class="step-num c-red">1</span><div>افتح <strong>فودافون كاش</strong> واختار <strong>تحويل أموال</strong></div></div>
+        <div class="step-row"><span class="step-num c-teal">2</span><div class="step-grow">حوّل على الرقم</div>
+          <button type="button" class="copy-btn" data-copy="01273132014"><i class="fas fa-copy" aria-hidden="true"></i> 01273132014</button>
+        </div>
+        <div class="step-row"><span class="step-num c-gold">3</span><div>اكتب <strong>اسمك</strong> في خانة الملاحظة</div></div>
+        <div class="step-row"><span class="step-num c-green">4</span><div>ابعت صورة الإيصال على <strong>واتساب</strong> وهنشحنلك</div></div>
+      </div>
+
+      <div class="divider-row"><span>بيانات التحويل</span></div>
+
+      <div class="recharge-form">
+        <label class="mini-label" for="senderInfo">المرسل (أنت)</label>
+        <input type="text" id="senderInfo" maxlength="60" placeholder="اسمك الكامل — رقم موبايلك" class="mini-input">
+
+        <label class="mini-label">المرسل إليه (الأستاذ)</label>
+        <div class="recipient">أ/ محمد أيمن — 01273132014</div>
+
+        <label class="mini-label" for="transferAmount">المبلغ المحوّل <span id="priceHint" class="price-hint"></span></label>
+        <div class="amount-wrap">
+          <input type="number" id="transferAmount" placeholder="0" min="1" inputmode="numeric" class="num-input">
+          <span class="amount-suffix">ج</span>
+        </div>
+      </div>
+
+      <a id="waLink" href="https://wa.me/201273132014" target="_blank" rel="noopener" class="wa-link">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i> ابعت الإيصال للأستاذ
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN FAB + MODAL -->
+<button type="button" class="admin-fab" data-action="open-admin" aria-label="لوحة التحكم">
+  <i class="fas fa-sliders-h" aria-hidden="true"></i>
+</button>
+
+<div id="adminModal" class="modal-bg" data-close-on-backdrop>
+  <div class="admin-modal-box" role="dialog" aria-modal="true">
+    <div class="admin-head">
+      <span class="admin-title"><i class="fas fa-cog c-teal" aria-hidden="true"></i> لوحة التحكم</span>
+      <button class="btn-danger" type="button" data-close="adminModal"><i class="fas fa-times" aria-hidden="true"></i></button>
+    </div>
+
+    <div id="adminLoginSec">
+      <p class="admin-prompt">أدخل كود المسؤول للدخول</p>
+      <input type="password" id="adminPassInput" class="code-input" placeholder="••••••" maxlength="20">
+      <button class="btn-primary" type="button" data-action="admin-login"><span class="btn-label"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> دخول</span></button>
+      <p id="adminLockMsg" class="admin-lock" hidden></p>
+    </div>
+
+    <div id="adminContent" hidden>
+      <div class="tabs admin-tabs" id="adminTabs">
+        <button class="tab active" type="button" data-atab="students">الطلاب</button>
+        <button class="tab" type="button" data-atab="sessions">الحصص</button>
+        <button class="tab" type="button" data-atab="quizzes">الاختبارات</button>
+        <button class="tab" type="button" data-atab="bin">المحذوفة</button>
+        <button class="tab" type="button" data-atab="settings">الإعدادات</button>
+      </div>
+
+      <div id="atab-students" class="atab">
+        <div class="atab-toolbar">
+          <span>إجمالي الطلاب: <strong id="totalStudents" class="c-teal">0</strong></span>
+          <input type="search" id="studentSearch" placeholder="ابحث بالاسم أو الموبايل…" class="mini-input search-mini">
+        </div>
+        <div id="studentsList"></div>
+        <div class="custom-charge">
+          <div class="mini-label c-teal">شحن مخصص</div>
+          <div class="custom-charge-row">
+            <input type="tel" id="customPhone" placeholder="رقم الطالب" maxlength="11" class="mini-input num-input">
+            <input type="number" id="customAmount" placeholder="المبلغ" class="mini-input num-input">
+            <button type="button" class="btn-teal" data-action="admin-custom-charge"><i class="fas fa-plus" aria-hidden="true"></i> شحن</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="atab-sessions" class="atab" hidden>
+        <div class="cls-row" id="adminClsBtns"></div>
+        <div id="adminSessList"></div>
+      </div>
+
+      <div id="atab-quizzes" class="atab" hidden>
+        <div class="cls-row" id="adminQuizClsBtns"></div>
+        <div id="adminQuizList"></div>
+      </div>
+
+      <div id="atab-bin" class="atab" hidden>
+        <p class="admin-prompt">المستخدمون المحذوفون مؤقتاً (يمكن استرجاعهم)</p>
+        <div id="binList"></div>
+      </div>
+
+      <div id="atab-settings" class="atab" hidden>
+        <label class="settings-label c-gold">الكود السحري (يفتح أي حصة)</label>
+        <input type="text" id="sMaster" class="mini-input mono-input c-teal" maxlength="10" placeholder="الكود السحري">
+
+        <label class="settings-label c-red">كود المسؤول (لدخول لوحة التحكم)</label>
+        <input type="text" id="sAdminPw" class="mini-input mono-input c-red" maxlength="20" placeholder="كود المسؤول">
+
+        <label class="settings-label c-teal">سعر الحصة الواحدة (جنيه)</label>
+        <input type="number" id="sPrice" class="mini-input mono-input c-teal" placeholder="50">
+
+        <button class="btn-primary" type="button" data-action="save-admin-settings"><span class="btn-label"><i class="fas fa-save" aria-hidden="true"></i> حفظ الإعدادات</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- CONFIRM DIALOG -->
+<div id="confirmModal" class="modal-bg" data-close-on-backdrop>
+  <div class="modal-box confirm-box" role="alertdialog" aria-modal="true">
+    <div class="modal-icon" id="confirmIcon">⚠️</div>
+    <div class="modal-title" id="confirmTitle">تأكيد</div>
+    <p class="modal-sub" id="confirmText"></p>
+    <div class="modal-actions">
+      <button class="btn-primary btn-red" type="button" id="confirmYes"><span class="btn-label">تأكيد</span></button>
+      <button class="btn-danger" type="button" data-close="confirmModal">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/app.js"></script>
+</body>
+</html>
